@@ -39,11 +39,12 @@
 - ✅ 운영 버그 수정 (2026-05-09): 데이터 로딩 실패 + NOT NULL 오류
 - ✅ Phase 3.9-A 운영 안정화: SECRET_KEY 교체, OAuth 로그인 간소화, 프롬프트 저장 오류 수정 (2026-05-12)
 - ✅ Phase 3.9-B(일부): 프롬프트 탭 복원, Chrome↔PWA 네비게이션 분리, 보고서 즉시 재생성 UI (2026-05-13)
+- ✅ Phase 3.9-D AI뉴스 파이프라인 뼈대: DB 모델 4개 + RSS 수집 + 인사이트 상태 관리 + GNB 활성화 (2026-05-14)
 
 **현재 작업:**
 - 🔄 Phase 3.9: 안정화 & 소규모 배포 테스트
-  - 3.9-A 완료 ✅ / 3.9-B 프롬프트 개량·재생성 완료 ✅
-  - 3.9-C UI 정리, 3.9-D AI뉴스 뼈대, 3.9-E 포트폴리오 뼈대, 3.9-F 소규모 배포 대기
+  - 3.9-A 완료 ✅ / 3.9-B 완료 ✅ / 3.9-D 완료 ✅
+  - 3.9-C UI 정리, 3.9-E 포트폴리오 뼈대, 3.9-F 소규모 배포 대기
 
 **다음 작업:**
 - 🔜 Phase 4: BYOK 생태계 구축 (Phase 3.9 완료 후)
@@ -91,6 +92,25 @@
 ## 🔧 구현 현황
 
 > Claude Code, Anti Gravity가 작성. 기획 팀이 읽고 다음 기획에 반영.
+
+- [2026-05-14] [Claude Code] 3.9-D AI뉴스 파이프라인 뼈대 구현 완료
+  - 신규 DB 테이블 4개: news_queries, news_raw, news_insights, pipeline_runs (SQLAlchemy 모델)
+  - STEP별 구현 범위:
+    - STEP 1 (검색식): UI 구현, 수동 편집 가능, 자동생성 버튼 비활성
+    - STEP 2 (RSS 수집): **완전 구현** (feedparser로 Google News 수집, URL 중복 제거)
+    - STEP 3 (AI 인사이트): UI만 구현, 버튼 비활성화, "3.9-E(또는 미래 phase) 예정" 안내
+    - STEP 4 (검수 & 발행): **완전 구현** (상태 관리: draft/review/published/youtube_queue)
+    - STEP 5 (실행 로그): **완전 구현** (PipelineRun 테이블 기록 — collect/generate/publish)
+  - 신규 라우트 6개:
+    - GET `/news-analytics` (@approved_required): 회원용 인사이트 게시판, published 인사이트 그룹별 표시
+    - GET `/admin/news-pipeline` (@supervisor_required): 관리자 파이프라인 대시보드
+    - POST `/admin/news-pipeline/query`: 검색식 저장/수정
+    - POST `/admin/news-pipeline/collect`: RSS 수집 트리거 (카테고리별/전체)
+    - POST `/admin/news-pipeline/publish`: 인사이트 상태 변경 및 로그 기록
+  - GNB "AI뉴스" 탭 활성화 + 햄버거 메뉴 파이프라인 링크 추가
+  - 신규 파일: templates/news_analytics.html, templates/admin_news_pipeline.html, migrations/003_news_pipeline.sql
+  - 수정 파일: models.py (+4 classes), app.py (+6 routes +3 helpers +constants), requirements.txt (feedparser), templates/layout.html
+  → 상태: DONE / commit & push 완료 (5 commits, Railway auto-deploy)
 
 - [2026-05-13] [Claude Code] 보고서 즉시 재생성 기능 추가
   - `/api/admin/regenerate` POST 엔드포인트 (supervisor/owner 전용, 로그인 기반 — CRON_SECRET 불필요)
@@ -161,6 +181,7 @@
 
 > 각 AI/사람이 작업 시작·종료 시 한 줄 기록. 최신이 위.
 
+- [2026-05-14] [Claude Code] 3.9-D 완료 검증. 4개 테이블 생성 확인, 5개 라우트 등록 확인, 템플릿 렌더링 확인, RSS 수집 기능 검증 완료. next: 3.9-E 포트폴리오 뼈대 또는 3.9-C UI 정리.
 - [2026-05-13] [Claude Code] 보고서 즉시 재생성 기능 구현 완료. /api/admin/regenerate 엔드포인트 + prompts.html 버튼 추가. Railway 배포 후 브라우저에서 버튼 클릭으로 6개 보고서 재생성 가능.
 - [2026-05-13] [Claude Code] BUG 2건 추가 수정 완료 (작동 확인)
   - 프롬프트 저장 후 탭 위치 유지: redirect에 ?tab={market} 파라미터 추가, prompts.html에서 복원
