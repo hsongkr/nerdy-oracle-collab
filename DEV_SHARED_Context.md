@@ -39,12 +39,13 @@
 - ✅ 운영 버그 수정 (2026-05-09): 데이터 로딩 실패 + NOT NULL 오류
 - ✅ Phase 3.9-A 운영 안정화: SECRET_KEY 교체, OAuth 로그인 간소화, 프롬프트 저장 오류 수정 (2026-05-12)
 - ✅ Phase 3.9-B(일부): 프롬프트 탭 복원, Chrome↔PWA 네비게이션 분리, 보고서 즉시 재생성 UI (2026-05-13)
-- ✅ Phase 3.9-D AI뉴스 파이프라인 뼈대: DB 모델 4개 + RSS 수집 + 인사이트 상태 관리 + GNB 활성화 (2026-05-14)
+- ✅ Phase 3.9-D AI뉴스 파이프라인 뼈대: DB 모델 4개 + RSS 수집 + 인사이트 상태 관리 + GNB 활성화 (2026-05-14, Claude Code)
+- ✅ Phase 3.9-E AI 인사이트 자동 생성: BeautifulSoup 기사 본문 수집 + Gemini 2.5 Pro 인사이트 초안 생성 + 카드 expand/collapse (2026-05-14, Anti Gravity)
 
 **현재 작업:**
 - 🔄 Phase 3.9: 안정화 & 소규모 배포 테스트
-  - 3.9-A 완료 ✅ / 3.9-B 완료 ✅ / 3.9-D 완료 ✅
-  - 3.9-C UI 정리, 3.9-E 포트폴리오 뼈대, 3.9-F 소규모 배포 대기
+  - 3.9-A ✅ / 3.9-B ✅ / 3.9-D ✅ / 3.9-E ✅
+  - 3.9-C UI 정리, 포트폴리오 뼈대, 소규모 배포 대기
 
 **다음 작업:**
 - 🔜 Phase 4: BYOK 생태계 구축 (Phase 3.9 완료 후)
@@ -73,12 +74,11 @@
   → 상태: DONE / 담당: Claude Code (Phase 4 구현 시 반영)
 
 - [2026-05-09] [Claude] AI뉴스 / 포트폴리오 페이지 Phase 3.9에서 뼈대 구현
-  - 현재 "예정" 배지 제거 → 탭 활성화
   - Phase 3.9: 기본 UI + 데이터 표시 (AI 분석 기능 없음)
   - Phase 4: BYOK 기반 AI 분석 기능 추가
-  - AI뉴스(/news-analytics): 검색식 입력 UI + Google RSS 기본 뷰
-  - 포트폴리오(/portfolio): 종목/평단가 입력 CRUD + yfinance 수익률 계산
-  → 상태: OPEN / 담당: Anti Gravity
+  - AI뉴스(/news-analytics): 3.9-D + 3.9-E로 완료 ✅ (RSS 수집 + Gemini 인사이트 생성)
+  - 포트폴리오(/portfolio): 종목/평단가 입력 CRUD + yfinance 수익률 계산 (미착수)
+  → 상태: PARTIALLY DONE / 포트폴리오 뼈대 미착수 (담당자 미정)
 
 - [2026-05-09] [Claude] 보고서 프롬프트 개량 방향
   - 현재 프롬프트: 데이터 나열 중심
@@ -92,6 +92,14 @@
 ## 🔧 구현 현황
 
 > Claude Code, Anti Gravity가 작성. 기획 팀이 읽고 다음 기획에 반영.
+
+- [2026-05-14] [Anti Gravity] 3.9-E AI 인사이트 자동 생성 구현 완료
+  - BeautifulSoup 기사 본문 수집 (RSS 수집 시 URL 크롤링, 최대 5,000자, 실패 시 무시)
+  - `POST /admin/news-pipeline/generate` — Gemini 2.5 Pro → NewsInsight(draft) 저장
+  - STEP 3 버튼 활성화 (`generateInsight` JS 함수 연결)
+  - 인사이트 카드 expand/collapse + Markdown 완전 렌더링 (`| markdown | safe`)
+  - `beautifulsoup4>=4.12.0` 추가 → Railway auto-deploy 완료
+  → 상태: DONE / 3 커밋 push 완료
 
 - [2026-05-14] [Claude Code] 3.9-D AI뉴스 파이프라인 뼈대 구현 완료
   - 신규 DB 테이블 4개: news_queries, news_raw, news_insights, pipeline_runs (SQLAlchemy 모델)
@@ -181,7 +189,9 @@
 
 > 각 AI/사람이 작업 시작·종료 시 한 줄 기록. 최신이 위.
 
-- [2026-05-14] [Claude Code] 3.9-D 완료 검증. 4개 테이블 생성 확인, 5개 라우트 등록 확인, 템플릿 렌더링 확인, RSS 수집 기능 검증 완료. next: 3.9-E 포트폴리오 뼈대 또는 3.9-C UI 정리.
+- [2026-05-15] [Claude Code] Anti Gravity 3.9-E 커밋 확인 + git pull 완료. DEV_SHARED_Context 양쪽(portfolio + nerdy-oracle-collab) 업데이트. next: 3.9-C UI 정리 또는 포트폴리오 뼈대 착수 (담당자 협의).
+- [2026-05-14] [Anti Gravity] 3.9-E 완료 (기사 본문 수집, Gemini 인사이트 생성, 카드 expand/collapse, Markdown 렌더링). 3개 커밋 push.
+- [2026-05-14] [Claude Code] 3.9-D 완료 검증. 4개 테이블·5개 라우트·템플릿·RSS 검증.
 - [2026-05-13] [Claude Code] 보고서 즉시 재생성 기능 구현 완료. /api/admin/regenerate 엔드포인트 + prompts.html 버튼 추가. Railway 배포 후 브라우저에서 버튼 클릭으로 6개 보고서 재생성 가능.
 - [2026-05-13] [Claude Code] BUG 2건 추가 수정 완료 (작동 확인)
   - 프롬프트 저장 후 탭 위치 유지: redirect에 ?tab={market} 파라미터 추가, prompts.html에서 복원
