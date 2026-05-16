@@ -41,10 +41,13 @@
 - ✅ Phase 3.9-B(일부): 프롬프트 탭 복원, Chrome↔PWA 네비게이션 분리, 보고서 즉시 재생성 UI (2026-05-13)
 - ✅ Phase 3.9-D AI뉴스 파이프라인 뼈대: DB 모델 4개 + RSS 수집 + 인사이트 상태 관리 + GNB 활성화 (2026-05-14, Claude Code)
 - ✅ Phase 3.9-E AI 인사이트 자동 생성: BeautifulSoup 기사 본문 수집 + Gemini 2.5 Pro 인사이트 초안 생성 + 카드 expand/collapse (2026-05-14, Anti Gravity)
+- ✅ Phase 3.9-F STEP1 인사이트 품질 개선: 컨텍스트 확대(500→1500자) + 프롬프트 전면 개선 + 시황 보고서 톤앤매너 강화 (2026-05-16, Claude Code)
 
 **현재 작업:**
-- 🔄 Phase 3.9: 안정화 & 소규모 배포 테스트
-  - 3.9-A ✅ / 3.9-B ✅ / 3.9-D ✅ / 3.9-E ✅
+- 🔄 Phase 3.9-F: AI 뉴스 인사이트 품질 개선 (Claude Code 진행 중)
+  - STEP1 ✅ 프롬프트 개선 완료
+  - STEP2 🔄 진행 예정: 뉴스 중요도 필터링 (Flash 2단계 파이프라인)
+  - 상세 기획: `AI_News_개선계획_20260515.md` 참조
   - 3.9-C UI 정리, 포트폴리오 뼈대, 소규모 배포 대기
 
 **다음 작업:**
@@ -92,6 +95,15 @@
 ## 🔧 구현 현황
 
 > Claude Code, Anti Gravity가 작성. 기획 팀이 읽고 다음 기획에 반영.
+
+- [2026-05-16] [Claude Code] Phase 3.9-F STEP1 완료 — 인사이트 품질 개선 1차 배포
+  - 기사 컨텍스트 500자 → 1,500자 확대
+  - INSIGHT_TYPE_DEFINITIONS 상수 추가 (5개 유형별 한국어 예시)
+  - 인사이트 생성 프롬프트 전면 교체: Nerdy Oracle 페르소나 + What/Why/So What 프레임워크 + 500~800자 길이 가이드
+  - 시황 보고서 시스템 프롬프트에 애널리스트 톤 추가 (수치 해석 요구, 불확실 표현 금지)
+  - DEFAULT_PROMPTS 섹션별 분량 가이드 추가 (200/250/150자)
+  - 251216_portfolio main 브랜치 push 완료 (commit: 68b51df)
+  → 상태: DONE / 다음: STEP2 뉴스 중요도 필터링 (Flash 1차 분류)
 
 - [2026-05-14] [Anti Gravity] 3.9-E AI 인사이트 자동 생성 구현 완료
   - BeautifulSoup 기사 본문 수집 (RSS 수집 시 URL 크롤링, 최대 5,000자, 실패 시 무시)
@@ -189,6 +201,8 @@
 
 > 각 AI/사람이 작업 시작·종료 시 한 줄 기록. 최신이 위.
 
+- [2026-05-16] [Claude Code] Phase 3.9-F STEP1 구현 완료. 인사이트 프롬프트 전면 개선 + 시황 보고서 톤 강화. 251216_portfolio push 완료. 다음 STEP: Flash 2단계 파이프라인으로 뉴스 중요도 필터링.
+- [2026-05-16] [Claude Code] 기획 문서 2개 생성 → nerdy-oracle-collab main 업로드: `AI_News_개선계획_20260515.md`, `작업확인_AntiGravity_20260515.md`
 - [2026-05-15] [Claude Code] Anti Gravity 3.9-E 커밋 확인 + git pull 완료. DEV_SHARED_Context 양쪽(portfolio + nerdy-oracle-collab) 업데이트. next: 3.9-C UI 정리 또는 포트폴리오 뼈대 착수 (담당자 협의).
 - [2026-05-14] [Anti Gravity] 3.9-E 완료 (기사 본문 수집, Gemini 인사이트 생성, 카드 expand/collapse, Markdown 렌더링). 3개 커밋 push.
 - [2026-05-14] [Claude Code] 3.9-D 완료 검증. 4개 테이블·5개 라우트·템플릿·RSS 검증.
