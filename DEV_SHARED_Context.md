@@ -96,6 +96,14 @@
 
 > Claude Code, Anti Gravity가 작성. 기획 팀이 읽고 다음 기획에 반영.
 
+- [2026-05-16] [Claude Code] Phase 3.9-F STEP3 완료 — 인사이트 admin 편집 UX 추가
+  - POST /admin/news-pipeline/edit: 제목·본문·유형 수정 저장
+  - POST /admin/news-pipeline/delete: 인사이트 삭제
+  - admin 파이프라인 화면에 ✏️ 편집 버튼(모달) + 🗑 삭제 버튼 추가
+  - 편집 모달: 제목 입력, 유형 드롭다운, 본문 textarea(Markdown), 글자수 카운터, 외부 클릭 닫기
+  - 251216_portfolio main 브랜치 push 완료 (commit: f330f9e)
+  → 상태: DONE / Phase 3.9-F 전체 완료 — 운영 테스트 후 소규모 배포 가능
+
 - [2026-05-16] [Claude Code] Phase 3.9-F STEP2 완료 — Gemini Flash 뉴스 중요도 분류 추가
   - STEP 2.5 신설: Flash 모델로 수집 기사 10건에 중요도 점수(1~5) + spam 플래그 부여
   - 스팸·어그로 기사 자동 제거, 점수 3 미만 필터링 후 상위 5건만 Pro에 전달
@@ -209,6 +217,7 @@
 
 > 각 AI/사람이 작업 시작·종료 시 한 줄 기록. 최신이 위.
 
+- [2026-05-16] [Claude Code] Phase 3.9-F STEP3 완료. 인사이트 편집 모달 + 삭제 버튼 추가. 251216_portfolio push 완료 (commit: f330f9e). Phase 3.9-F 전 STEP 완료.
 - [2026-05-16] [Claude Code] Phase 3.9-F STEP2 완료. Flash 뉴스 중요도 분류(1~5점 + spam 필터) 추가. 10건→상위5건 선별 후 Pro 전달. 251216_portfolio push 완료 (commit: 740c61b).
 - [2026-05-16] [Claude Code] Phase 3.9-F STEP1 구현 완료. 인사이트 프롬프트 전면 개선 + 시황 보고서 톤 강화. 251216_portfolio push 완료.
 - [2026-05-16] [Claude Code] 기획 문서 2개 생성 → nerdy-oracle-collab main 업로드: `AI_News_개선계획_20260515.md`, `작업확인_AntiGravity_20260515.md`
