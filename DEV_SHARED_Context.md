@@ -48,6 +48,8 @@
   - C: 종합분석 생성·편집창 이미지/YouTube/티커/원문·버튼 순서 변경
   - D: /news-analytics sticky 툴바·섹션 스크롤·종합분석 섹션·카드 전면 개선
   - 상세 계획: `Phase_3.9-G_실행계획.md` 참조
+- ✅ Phase 3.9-H: AI 뉴스 버그픽스 & RSS 아키텍처 개선 (2026-05-16, Claude Code)
+  - 5개 커밋 (ed28a95 → 159dd3a), 상세 내용: `Phase_3.9-H_버그픽스_로그.md` 참조
 
 **현재 작업:**
 - 🔜 운영 테스트 후 소규모 배포 (3.9 완료 기준)
@@ -99,6 +101,21 @@
 ## 🔧 구현 현황
 
 > Claude Code, Anti Gravity가 작성. 기획 팀이 읽고 다음 기획에 반영.
+
+- [2026-05-16] [Claude Code] Phase 3.9-H 완료 — AI 뉴스 버그픽스 & RSS 아키텍처 개선
+  - **버그 1**: 툴바가 스크롤 시 GNB 뒤로 숨는 문제 → JS로 .app-header 높이 동적 측정, toolbar.style.top 적용
+  - **버그 2**: 뉴스 섹션 순서 오류 (dict.items() 순서 → categories 정의 순서 유지로 수정) + {% endif %} 누락
+  - **버그 3**: admin_news_pipeline.html에 collectRSS·generateInsight 함수 중복 선언 제거
+  - **버그 4**: default_queries 변수 템플릿에 미전달 → app.py 라우트에 추가
+  - **기능**: 인사이트 생성 시 top 관련 기사의 source_url/title/name/date 자동 저장
+  - **기능**: /news-analytics 카드 — 원문 링크를 제목 바로 아래 항상 노출, 날짜를 원문 발표일 우선 표시
+  - **아키텍처**: Google News RSS → 직접 RSS 피드 + 키워드 필터 방식으로 전환
+    - 원인: Railway 서버 IP가 Google News RSS에서 차단돼 수집 0건
+    - STEP 1 UI: "키워드 필터" + "RSS 피드 URL 목록(줄바꿈 구분)" 두 영역으로 분리
+    - 수집 로직: 각 RSS URL 순회 → 키워드 매칭(제목·요약) → 통과 기사만 저장
+    - DEFAULT_FEED_URLS: TechCrunch, Ars Technica, The Verge, Reuters, STAT News 등 분야별 큐레이션
+  - 251216_portfolio main push 완료 (commits: ed28a95 → fe8808d → 2bc0bd3 → 4610e99 → 159dd3a)
+  → 상태: DONE / 운영 테스트 가능
 
 - [2026-05-16] [Claude Code] Phase 3.9-F STEP3 완료 — 인사이트 admin 편집 UX 추가
   - POST /admin/news-pipeline/edit: 제목·본문·유형 수정 저장
@@ -221,6 +238,7 @@
 
 > 각 AI/사람이 작업 시작·종료 시 한 줄 기록. 최신이 위.
 
+- [2026-05-16] [Claude Code] Phase 3.9-H 완료. 툴바 위치·섹션 순서 버그픽스, 원문 링크·날짜 카드 개선, RSS 수집 아키텍처 직접 피드+키워드 필터로 전환. 5개 커밋 push (ed28a95→159dd3a).
 - [2026-05-16] [Claude Code] Phase 3.9-G 전 STEP 완료 (A→D). DB 마이그레이션·수집 개선·종합분석·편집창 확장·news-analytics 전면 개선. 251216_portfolio 4개 커밋 push (ef63358→eec6254).
 - [2026-05-16] [Claude Code] Phase 3.9-F STEP3 완료. 인사이트 편집 모달 + 삭제 버튼 추가. 251216_portfolio push 완료 (commit: f330f9e). Phase 3.9-F 전 STEP 완료.
 - [2026-05-16] [Claude Code] Phase 3.9-F STEP2 완료. Flash 뉴스 중요도 분류(1~5점 + spam 필터) 추가. 10건→상위5건 선별 후 Pro 전달. 251216_portfolio push 완료 (commit: 740c61b).
