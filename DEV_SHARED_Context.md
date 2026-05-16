@@ -41,14 +41,18 @@
 - ✅ Phase 3.9-B(일부): 프롬프트 탭 복원, Chrome↔PWA 네비게이션 분리, 보고서 즉시 재생성 UI (2026-05-13)
 - ✅ Phase 3.9-D AI뉴스 파이프라인 뼈대: DB 모델 4개 + RSS 수집 + 인사이트 상태 관리 + GNB 활성화 (2026-05-14, Claude Code)
 - ✅ Phase 3.9-E AI 인사이트 자동 생성: BeautifulSoup 기사 본문 수집 + Gemini 2.5 Pro 인사이트 초안 생성 + 카드 expand/collapse (2026-05-14, Anti Gravity)
-- ✅ Phase 3.9-F STEP1 인사이트 품질 개선: 컨텍스트 확대(500→1500자) + 프롬프트 전면 개선 + 시황 보고서 톤앤매너 강화 (2026-05-16, Claude Code)
+- ✅ Phase 3.9-F: 인사이트 품질 개선 전 STEP 완료 (프롬프트·Flash랭킹·편집 모달, 2026-05-16, Claude Code)
+- ✅ Phase 3.9-G: AI News 고도화 전 STEP 완료 (2026-05-16, Claude Code)
+  - A: DB 컬럼 추가 (image_url, youtube_url, tickers, is_synthesis, source_*)
+  - B: 수집 30건·기간 필터·URL복사박스·건수표시
+  - C: 종합분석 생성·편집창 이미지/YouTube/티커/원문·버튼 순서 변경
+  - D: /news-analytics sticky 툴바·섹션 스크롤·종합분석 섹션·카드 전면 개선
+  - 상세 계획: `Phase_3.9-G_실행계획.md` 참조
 
 **현재 작업:**
-- 🔄 Phase 3.9-F: AI 뉴스 인사이트 품질 개선 (Claude Code 진행 중)
-  - STEP1 ✅ 프롬프트 개선 완료
-  - STEP2 🔄 진행 예정: 뉴스 중요도 필터링 (Flash 2단계 파이프라인)
-  - 상세 기획: `AI_News_개선계획_20260515.md` 참조
-  - 3.9-C UI 정리, 포트폴리오 뼈대, 소규모 배포 대기
+- 🔜 운영 테스트 후 소규모 배포 (3.9 완료 기준)
+- 🔜 포트폴리오 뼈대 (/portfolio CRUD + yfinance)
+- 🔜 Phase 4: BYOK 생태계 구축
 
 **다음 작업:**
 - 🔜 Phase 4: BYOK 생태계 구축 (Phase 3.9 완료 후)
@@ -217,6 +221,7 @@
 
 > 각 AI/사람이 작업 시작·종료 시 한 줄 기록. 최신이 위.
 
+- [2026-05-16] [Claude Code] Phase 3.9-G 전 STEP 완료 (A→D). DB 마이그레이션·수집 개선·종합분석·편집창 확장·news-analytics 전면 개선. 251216_portfolio 4개 커밋 push (ef63358→eec6254).
 - [2026-05-16] [Claude Code] Phase 3.9-F STEP3 완료. 인사이트 편집 모달 + 삭제 버튼 추가. 251216_portfolio push 완료 (commit: f330f9e). Phase 3.9-F 전 STEP 완료.
 - [2026-05-16] [Claude Code] Phase 3.9-F STEP2 완료. Flash 뉴스 중요도 분류(1~5점 + spam 필터) 추가. 10건→상위5건 선별 후 Pro 전달. 251216_portfolio push 완료 (commit: 740c61b).
 - [2026-05-16] [Claude Code] Phase 3.9-F STEP1 구현 완료. 인사이트 프롬프트 전면 개선 + 시황 보고서 톤 강화. 251216_portfolio push 완료.
