@@ -54,10 +54,11 @@
 - ✅ Phase 3.9-F 프롬프트·품질 강화: What→Why→So What 분석 프레임, Gemini Flash 1차 랭킹 필터, 인사이트 편집/삭제 모달 (2026-05-15, Claude Code)
 - ✅ Phase 3.9-G 미디어·합성·UI 전면 개편: NewsInsight 미디어 컬럼 추가, 이미지 업로드, 합성(synthesis) 인사이트 생성, /news-analytics 완전 재설계, RSS 직접 피드 전환 (2026-05-15~16, Claude Code)
 - ✅ Phase 3.9-H 파이프라인 UX 완성: 실시간 수집 진행 모달(Progress Bar + 피드별 통계 테이블), STEP3 아코디언 동작 설명, Google News 토픽 피드 병행, google-genai 패키지 교체 (2026-05-17~18, Anti Gravity)
+- ✅ Phase 3.9-I 수집 기사 품질 필터링: quality_score 3단계(1=본문없음, 2=본문있음, 3=Flash검증), Gemini Flash 관련성 검증 라우트, URL 목록 품질 수준 선택, 기사 뱃지 시각화 (2026-05-18, Claude Code)
 
 **현재 작업:**
 - 🔄 Phase 3.9: 안정화 & 소규모 배포 테스트
-  - 3.9-A ✅ / 3.9-B ✅ / 3.9-D ✅ / 3.9-E ✅ / 3.9-F ✅ / 3.9-G ✅ / 3.9-H ✅
+  - 3.9-A ✅ / 3.9-B ✅ / 3.9-D ✅ / 3.9-E ✅ / 3.9-F ✅ / 3.9-G ✅ / 3.9-H ✅ / 3.9-I ✅
   - **남은 작업**: 3.9-C UI 정리, 포트폴리오(/portfolio) CRUD 뼈대, 소규모 배포 테스트
 
 **다음 작업:**
@@ -118,6 +119,17 @@
 ## 🔧 구현 현황
 
 > Claude Code, Anti Gravity가 작성. 기획 팀이 읽고 다음 기획에 반영.
+
+- [2026-05-18] [Claude Code] 3.9-I 수집 기사 품질 필터링 시스템 구현 (commit: a7b7d05)
+  - **`quality_score` 컬럼 추가** (`news_raw` 테이블): 1=본문없음, 2=본문있음(미검증), 3=Flash검증통과
+  - **수집 시 자동 설정**: `_collect_rss_for_category` — full_text 300자 이상이면 2, 아니면 1
+  - **신규 라우트 `POST /admin/news-pipeline/quality-filter`**: quality_score=2인 기사를 Gemini 2.5 Flash로 배치 검증(30건씩), 관련없으면 DB 삭제, 관련있으면 quality_score=3으로 승격
+  - **`GET /admin/news-pipeline/urls` 개선**: `quality=all|text|curated` 파라미터 추가 (all>=1, text>=2, curated>=3)
+  - **STEP 2 UI 개선**:
+    - 🧹 전체/분야별 품질 필터 버튼 추가, 삭제/통과 건수 실시간 표시
+    - URL 복사 박스에 품질 수준 선택기(전체/본문있음/검증됨) 추가
+    - 기사 목록: ✦검증(보라)/✓본문(초록)/본문없음(회색) 배지로 품질 시각화
+  → 상태: DONE / Railway auto-deploy 완료
 
 - [2026-05-17~18] [Anti Gravity] 3.9-H AI뉴스 파이프라인 UX 완성 + 파이프라인 수리 (3커밋)
   - **RSS 수집 수리**: Google News 토픽 피드 + 직접 피드 병행, 키워드 필터 완화(STOP_WORDS 제외, 최대 8개), 기간 14일로 확대 → ai_infra 카테고리 로컬 테스트: 43건 수집 성공
