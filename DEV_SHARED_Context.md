@@ -55,6 +55,7 @@
 - ✅ Phase 3.9-G 미디어·합성·UI 전면 개편: NewsInsight 미디어 컬럼 추가, 이미지 업로드, 합성(synthesis) 인사이트 생성, /news-analytics 완전 재설계, RSS 직접 피드 전환 (2026-05-15~16, Claude Code)
 - ✅ Phase 3.9-H 파이프라인 UX 완성: 실시간 수집 진행 모달(Progress Bar + 피드별 통계 테이블), STEP3 아코디언 동작 설명, Google News 토픽 피드 병행, google-genai 패키지 교체 (2026-05-17~18, Anti Gravity)
 - ✅ Phase 3.9-I 수집 기사 품질 필터링: quality_score 3단계(1=본문없음, 2=본문있음, 3=Flash검증), Gemini Flash 관련성 검증 라우트, URL 목록 품질 수준 선택, 기사 뱃지 시각화 (2026-05-18, Claude Code)
+- ✅ 버그픽스 2건: Google News 리다이렉트 URL 해제(NotebookLM 호환), Gemini 503 재시도·Flash 폴백 (2026-05-19, Claude Code)
 
 **현재 작업:**
 - 🔄 Phase 3.9: 안정화 & 소규모 배포 테스트
@@ -119,6 +120,11 @@
 ## 🔧 구현 현황
 
 > Claude Code, Anti Gravity가 작성. 기획 팀이 읽고 다음 기획에 반영.
+
+- [2026-05-19] [Claude Code] 버그픽스 2건 (commit: 35dbf9c)
+  - **Google News 리다이렉트 URL 해제**: 수집 시 `news.google.com/articles/CBMi...` URL을 `requests.head(allow_redirects=True)`로 실제 기사 URL로 변환 저장 → NotebookLM 파싱 불가 문제 해결
+  - **Gemini 503 재시도·폴백**: `_gemini_generate()`에 503/UNAVAILABLE 감지 → 최대 3회 재시도(10s, 20s) 추가. generate/synthesis 라우트: Pro 재시도 후에도 실패 시 Flash로 자동 폴백. UI: 503/429 에러 시 한국어 안내 + "잠시 후 재시도" 가이드
+  → 상태: DONE / Railway auto-deploy 완료
 
 - [2026-05-18] [Claude Code] 3.9-I 수집 기사 품질 필터링 시스템 구현 (commit: a7b7d05)
   - **`quality_score` 컬럼 추가** (`news_raw` 테이블): 1=본문없음, 2=본문있음(미검증), 3=Flash검증통과
