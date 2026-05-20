@@ -56,10 +56,13 @@
 - ✅ Phase 3.9-H 파이프라인 UX 완성: 실시간 수집 진행 모달(Progress Bar + 피드별 통계 테이블), STEP3 아코디언 동작 설명, Google News 토픽 피드 병행, google-genai 패키지 교체 (2026-05-17~18, Anti Gravity)
 - ✅ Phase 3.9-I 수집 기사 품질 필터링: quality_score 3단계(1=본문없음, 2=본문있음, 3=Flash검증), Gemini Flash 관련성 검증 라우트, URL 목록 품질 수준 선택, 기사 뱃지 시각화 (2026-05-18, Claude Code)
 - ✅ 버그픽스 2건: Google News 리다이렉트 URL 해제(NotebookLM 호환), Gemini 503 재시도·Flash 폴백 (2026-05-19, Claude Code)
+- 🔴 **Railway 플랫폼 장애** (2026-05-19 22:29 UTC ~): Google Cloud가 Railway 계정 차단 → 전체 서비스 다운, 복구 대기 중
 
 **현재 작업:**
 - 🔄 Phase 3.9: 안정화 & 소규모 배포 테스트
   - 3.9-A ✅ / 3.9-B ✅ / 3.9-D ✅ / 3.9-E ✅ / 3.9-F ✅ / 3.9-G ✅ / 3.9-H ✅ / 3.9-I ✅
+  - **운영 중단**: Railway 플랫폼 장애로 서비스 접속 불가 (코드 문제 아님)
+  - **복구 후 할 일**: Railway Redeploy → 전체 파이프라인 동작 확인
   - **남은 작업**: 3.9-C UI 정리, 포트폴리오(/portfolio) CRUD 뼈대, 소규모 배포 테스트
 
 **다음 작업:**
@@ -120,6 +123,13 @@
 ## 🔧 구현 현황
 
 > Claude Code, Anti Gravity가 작성. 기획 팀이 읽고 다음 기획에 반영.
+
+- [2026-05-20] [Claude Code] Railway 플랫폼 장애 대응 로그 작성
+  - **장애 원인**: Google Cloud가 Railway 계정 차단 → Railway 전체 서비스/대시보드 다운
+  - **대응 과정**: 코드 점검(문법·import·gunicorn 블로킹) → 네트워크 의심 → status.railway.app 확인 → 플랫폼 장애 확인
+  - **코드 수정 (commit: 437f344)**: `_gemini_generate()` sleep 제거 — 단일 워커 블로킹 예방 (장애와 별개로 실제 버그였음)
+  - **상세 기록**: `Railway_장애_대응_로그_20260520.md` 생성
+  → 상태: 장애 진행 중 / Railway 복구 대기
 
 - [2026-05-19] [Claude Code] 버그픽스 2건 (commit: 35dbf9c)
   - **Google News 리다이렉트 URL 해제**: 수집 시 `news.google.com/articles/CBMi...` URL을 `requests.head(allow_redirects=True)`로 실제 기사 URL로 변환 저장 → NotebookLM 파싱 불가 문제 해결
